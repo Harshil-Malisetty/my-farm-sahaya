@@ -31,7 +31,7 @@ export const DashboardHeader = () => {
               <Sprout className="h-8 w-8 text-primary" />
             </div>
             <div>
-              <h1 className="malayalam-text text-xl text-primary font-bold">
+              <h1 className="malayalam-text text-3xl text-primary font-bold">
                 {t('appName')}
               </h1>
               <p className="english-subtext">

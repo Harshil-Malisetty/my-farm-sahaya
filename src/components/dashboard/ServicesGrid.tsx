@@ -2,17 +2,12 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { 
-  Cloud, 
+  Wheat, 
   Bug, 
-  Sprout, 
-  Tractor, 
-  BookOpen, 
-  Lightbulb, 
-  Users, 
-  TreePine 
+  Settings 
 } from 'lucide-react';
 
-interface Service {
+interface ServiceCategory {
   id: string;
   icon: React.ElementType;
   route: string;
@@ -20,80 +15,43 @@ interface Service {
   englishName: string;
   malayalamDesc: string;
   englishDesc: string;
+  bgGradient: string;
+  iconColor: string;
 }
 
-const services: Service[] = [
+const serviceCategories: ServiceCategory[] = [
   {
-    id: 'weather',
-    icon: Cloud,
-    route: '/weather',
-    malayalamName: 'കാലാവസ്ഥ',
-    englishName: 'Weather',
-    malayalamDesc: 'തത്സമയ കാലാവസ്ഥാ വിവരങ്ങൾ',
-    englishDesc: 'Real-time weather updates',
+    id: 'field-care',
+    icon: Wheat,
+    route: '/field-care',
+    malayalamName: 'പാട പരിചരണം',
+    englishName: 'Field Care',
+    malayalamDesc: 'കാലാവസ്ഥ, വളം, ആധുനിക കൃഷി രീതികൾ',
+    englishDesc: 'Weather, fertilizers, and modern farming techniques',
+    bgGradient: 'from-green-500 to-emerald-600',
+    iconColor: 'text-white'
   },
   {
-    id: 'pest-disease',
+    id: 'crop-support',
     icon: Bug,
-    route: '/pest-disease',
-    malayalamName: 'കീടം',
-    englishName: 'Pest & Disease',
-    malayalamDesc: 'ഫോട്ടോയിലൂടെ കീടങ്ങളെ കണ്ടെത്തുക',
-    englishDesc: 'Detect pests through photos',
+    route: '/crop-support',
+    malayalamName: 'വിള സഹായം',
+    englishName: 'Crop Support',
+    malayalamDesc: 'കീടനാശിനി, വിള നിർദ്ദേശങ്ങൾ',
+    englishDesc: 'Pest control and crop recommendations',
+    bgGradient: 'from-orange-500 to-red-500',
+    iconColor: 'text-white'
   },
   {
-    id: 'fertilizer',
-    icon: Sprout,
-    route: '/fertilizer',
-    malayalamName: 'വളം',
-    englishName: 'Fertilizer & Soil',
-    malayalamDesc: 'വിപണി വിലയനുസരിച്ച് വള ശുപാർശകൾ',
-    englishDesc: 'Market-based recommendations',
-  },
-  {
-    id: 'modern-farming',
-    icon: Tractor,
-    route: '/modern-farming',
-    malayalamName: 'ആധുനിക കൃഷി',
-    englishName: 'Modern Farming',
-    malayalamDesc: 'മണ്ണിനും വിളയ്ക്കും അനുയോജ്യമായ ആധുനിക രീതികൾ',
-    englishDesc: 'Modern techniques for your crops',
-  },
-  {
-    id: 'farm-diary',
-    icon: BookOpen,
-    route: '/farm-diary',
-    malayalamName: 'കൃഷി ദിനപതി',
-    englishName: 'Farm Diary',
-    malayalamDesc: 'ദൈനംദിന കൃഷി പ്രവർത്തനങ്ങൾ രേഖപ്പെടുത്തുക',
-    englishDesc: 'Log daily farming activities',
-  },
-  {
-    id: 'crop-recommender',
-    icon: Lightbulb,
-    route: '/crop-recommender',
-    malayalamName: 'വിള നിർദ്ദേശം',
-    englishName: 'Crop Recommender',
-    malayalamDesc: 'സീസണനുസരിച്ച് മികച്ച 3 വിളകൾ',
-    englishDesc: 'Top 3 seasonal crop suggestions',
-  },
-  {
-    id: 'farmer-groups',
-    icon: Users,
-    route: '/farmer-groups',
-    malayalamName: 'കൂട്ടായ്മ',
-    englishName: 'Farmer Groups',
-    malayalamDesc: 'ശബ്ദത്തിലൂടെ കർഷകരുമായി ചാറ്റ്',
-    englishDesc: 'Chat with farmers using voice',
-  },
-  {
-    id: 'virtual-farm',
-    icon: TreePine,
-    route: '/virtual-farm',
-    malayalamName: 'വെർച്വൽ ഫാം',
-    englishName: 'Virtual Farm',
-    malayalamDesc: 'ദൃശ്യമായ കൃഷിയിടം ഘട്ടം ഘട്ടമായി',
-    englishDesc: 'Visual farm growth tracking',
+    id: 'farm-management',
+    icon: Settings,
+    route: '/farm-management',
+    malayalamName: 'ഫാം മാനേജ്മെന്റ്',
+    englishName: 'Farm Management',
+    malayalamDesc: 'ദിനപതി, കർഷക കൂട്ടായ്മ, വെർച്വൽ ഫാം',
+    englishDesc: 'Diary, farmer groups, and virtual farm',
+    bgGradient: 'from-blue-500 to-teal-600',
+    iconColor: 'text-white'
   },
 ];
 
@@ -101,63 +59,62 @@ export const ServicesGrid = () => {
   const navigate = useNavigate();
   const { language } = useLanguage();
 
-  const getIconColor = (serviceId: string) => {
-    const colorMap = {
-      'weather': 'text-sky-500',
-      'pest-disease': 'text-orange-500', 
-      'fertilizer': 'text-green-500',
-      'modern-farming': 'text-purple-500',
-      'farm-diary': 'text-amber-500',
-      'crop-recommender': 'text-pink-500',
-      'farmer-groups': 'text-blue-500',
-      'virtual-farm': 'text-teal-500',
-    };
-    return colorMap[serviceId as keyof typeof colorMap] || 'text-primary';
-  };
-
-  const handleServiceClick = (route: string) => {
+  const handleCategoryClick = (route: string) => {
     navigate(route);
   };
 
   return (
     <div className="py-8">
-      <div className="text-center mb-8">
-        <h2 className="malayalam-text text-2xl mb-2">
+      <div className="text-center mb-12">
+        <h2 className="malayalam-text text-3xl font-bold mb-4 text-primary">
           {language === 'malayalam' ? 'സേവനങ്ങൾ' : 'Services'}
         </h2>
-        <p className="english-subtext">
+        <p className="english-subtext text-lg max-w-2xl mx-auto">
           {language === 'malayalam' 
             ? 'നിങ്ങളുടെ കൃഷിയെ മുന്നോട്ട് കൊണ്ടുപോകാൻ ആവശ്യമായ എല്ലാ സേവനങ്ങളും'
-            : 'All the services you need to advance your farming'
+            : 'All the services you need to advance your farming journey'
           }
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {services.map((service) => {
-          const Icon = service.icon;
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        {serviceCategories.map((category) => {
+          const Icon = category.icon;
           
           return (
-            <button
-              key={service.id}
-              onClick={() => handleServiceClick(service.route)}
-              className="service-button text-left group"
+            <div
+              key={category.id}
+              onClick={() => handleCategoryClick(category.route)}
+              className="group cursor-pointer transform hover:scale-105 transition-all duration-300"
             >
-              <div className="flex flex-col items-center text-center space-y-3">
-                <div className="bg-primary/10 group-hover:bg-primary/20 p-4 rounded-2xl transition-colors duration-300">
-                  <Icon className={`h-8 w-8 ${getIconColor(service.id)} group-hover:scale-110 transition-transform duration-300`} />
+              <div className={`bg-gradient-to-br ${category.bgGradient} rounded-3xl p-8 text-white h-full min-h-[280px] flex flex-col justify-between shadow-xl hover:shadow-2xl transition-shadow duration-300`}>
+                <div className="text-center space-y-6">
+                  <div className="bg-white/20 backdrop-blur-sm p-6 rounded-2xl mx-auto w-fit group-hover:bg-white/30 transition-colors duration-300">
+                    <Icon className={`h-16 w-16 ${category.iconColor} group-hover:scale-110 transition-transform duration-300`} />
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <h3 className="malayalam-text text-2xl font-bold">
+                      {language === 'malayalam' ? category.malayalamName : category.englishName}
+                    </h3>
+                    <p className="english-subtext text-lg leading-relaxed opacity-90">
+                      {language === 'malayalam' ? category.malayalamDesc : category.englishDesc}
+                    </p>
+                  </div>
                 </div>
                 
-                <div className="space-y-1">
-                  <h3 className="malayalam-text text-foreground group-hover:text-primary transition-colors duration-300">
-                    {language === 'malayalam' ? service.malayalamName : service.englishName}
-                  </h3>
-                  <p className="english-subtext text-xs leading-relaxed">
-                    {language === 'malayalam' ? service.malayalamDesc : service.englishDesc}
-                  </p>
+                <div className="text-center mt-6">
+                  <div className="inline-flex items-center text-white/80 group-hover:text-white transition-colors duration-300">
+                    <span className="english-subtext font-medium">
+                      {language === 'malayalam' ? 'കൂടുതൽ അറിയുക' : 'Learn More'}
+                    </span>
+                    <svg className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
                 </div>
               </div>
-            </button>
+            </div>
           );
         })}
       </div>
