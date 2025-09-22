@@ -18,63 +18,39 @@ export const VoiceNavigation = () => {
     }
   };
 
-  const handleSpeakHelp = () => {
-    if (isPlaying) {
-      stop();
-    } else {
-      const helpText = language === 'malayalam' 
-        ? 'കാലാവസ്ഥ, കീടം, വളം, ആധുനിക കൃഷി, കൃഷി ദിനപതി, വിള നിർദ്ദേശം, കൂട്ടായ്മ, അല്ലെങ്കിൽ വെർച്വൽ ഫാം എന്ന് പറയുക'
-        : 'Say weather, pest, fertilizer, modern farming, farm diary, crop recommender, farmer groups, or virtual farm';
-      speak(helpText);
-    }
-  };
 
   return (
     <div className="sticky top-[80px] z-30 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border-b border-primary/20">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-center gap-4">
-          {/* Voice Help Button */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleSpeakHelp}
-            className="flex items-center gap-2"
-            disabled={isPlaying}
-          >
-            <Volume2 className={`h-4 w-4 ${isPlaying ? 'animate-pulse' : ''}`} />
-            <span className="hidden sm:inline">
-              {language === 'malayalam' ? 'ശബ്ദ സഹായം' : 'Voice Help'}
-            </span>
-          </Button>
-
-          {/* Main Voice Button */}
+      <div className="container mx-auto px-4 py-6">
+        <div className="flex flex-col items-center justify-center gap-4">
+          {/* Main Voice Button - Centered and Round */}
           <Button
             onClick={handleVoiceToggle}
-            className={`voice-button ${isListening ? 'animate-pulse' : ''}`}
+            className={`w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transition-all duration-300 ${isListening ? 'animate-pulse ring-4 ring-primary/30' : ''}`}
             size="lg"
           >
             {isListening ? (
-              <MicOff className="h-6 w-6" />
+              <MicOff className="h-8 w-8 text-white" />
             ) : (
-              <Mic className="h-6 w-6" />
+              <Mic className="h-8 w-8 text-white" />
             )}
           </Button>
 
           {/* Status Text */}
-          <div className="text-center min-w-[120px]">
+          <div className="text-center">
             {isListening ? (
               <div className="space-y-1">
-                <p className="malayalam-text text-primary text-sm">
+                <p className="malayalam-text text-primary text-sm font-medium">
                   {t('listening')}
                 </p>
                 {transcript && (
-                  <p className="english-subtext text-xs bg-background/50 px-2 py-1 rounded">
+                  <p className="english-subtext text-xs bg-background/50 px-3 py-1 rounded-full">
                     {transcript}
                   </p>
                 )}
               </div>
             ) : (
-              <p className="english-subtext text-xs">
+              <p className="english-subtext text-xs text-muted-foreground">
                 {t('voiceHelp')}
               </p>
             )}

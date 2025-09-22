@@ -101,6 +101,20 @@ export const ServicesGrid = () => {
   const navigate = useNavigate();
   const { language } = useLanguage();
 
+  const getIconColor = (serviceId: string) => {
+    const colorMap = {
+      'weather': 'text-sky-500',
+      'pest-disease': 'text-orange-500', 
+      'fertilizer': 'text-green-500',
+      'modern-farming': 'text-purple-500',
+      'farm-diary': 'text-amber-500',
+      'crop-recommender': 'text-pink-500',
+      'farmer-groups': 'text-blue-500',
+      'virtual-farm': 'text-teal-500',
+    };
+    return colorMap[serviceId as keyof typeof colorMap] || 'text-primary';
+  };
+
   const handleServiceClick = (route: string) => {
     navigate(route);
   };
@@ -131,7 +145,7 @@ export const ServicesGrid = () => {
             >
               <div className="flex flex-col items-center text-center space-y-3">
                 <div className="bg-primary/10 group-hover:bg-primary/20 p-4 rounded-2xl transition-colors duration-300">
-                  <Icon className="h-8 w-8 text-primary" />
+                  <Icon className={`h-8 w-8 ${getIconColor(service.id)} group-hover:scale-110 transition-transform duration-300`} />
                 </div>
                 
                 <div className="space-y-1">
