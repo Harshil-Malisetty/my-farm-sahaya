@@ -1,42 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Kerala Farmer App - Krishi Sakhi Design System
+   Colors inspired by Kerala's natural beauty - lush greens, warm earth tones
+   All colors MUST be HSL. */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
+    /* Kerala-inspired color palette */
+    --background: 124 58% 98%; /* Warm cream white */
+    --foreground: 24 10% 10%; /* Deep charcoal */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
+    --card-foreground: 24 10% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
+    --popover-foreground: 24 10% 10%;
+    
+    /* Primary green - Kerala's lush nature */
+    --primary: 142 70% 45%; /* Rich Kerala green */
+    --primary-foreground: 0 0% 98%;
+    --primary-glow: 142 60% 65%;
+    
+    /* Secondary colors - earth tones */
+    --secondary: 30 54% 90%; /* Warm beige */
+    --secondary-foreground: 24 10% 10%;
+    
+    /* Accent - coconut palm brown */
+    --accent: 30 50% 85%;
+    --accent-foreground: 24 10% 10%;
+    
+    /* Functional colors */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --muted: 30 54% 94%;
+    --muted-foreground: 24 5% 64%;
+    --border: 30 54% 88%;
+    --input: 30 54% 88%;
+    --ring: 142 70% 45%;
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -56,33 +58,26 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --background: 24 10% 7%;
+    --foreground: 0 0% 95%;
+    --card: 24 10% 10%;
+    --card-foreground: 0 0% 95%;
+    --popover: 24 10% 10%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 142 70% 50%;
+    --primary-foreground: 0 0% 7%;
+    --primary-glow: 142 60% 70%;
+    --secondary: 24 10% 15%;
+    --secondary-foreground: 0 0% 95%;
+    --accent: 24 10% 15%;
+    --accent-foreground: 0 0% 95%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 95%;
+    --muted: 24 10% 15%;
+    --muted-foreground: 24 5% 64%;
+    --border: 24 10% 18%;
+    --input: 24 10% 18%;
+    --ring: 142 70% 50%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -98,8 +93,64 @@ All colors MUST be HSL.
   * {
     @apply border-border;
   }
-
+  
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(180deg, hsl(var(--background)), hsl(124 20% 96%));
+    min-height: 100vh;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground;
+  }
+}
+
+@layer components {
+  .farmer-card {
+    @apply bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] active:scale-95;
+  }
+  
+  .service-button {
+    @apply farmer-card min-h-[120px] flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-primary/5 hover:border-primary/20 transition-all duration-300;
+  }
+  
+  .language-toggle {
+    @apply bg-primary text-primary-foreground px-6 py-3 rounded-full shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 active:scale-95 font-medium;
+  }
+  
+  .voice-button {
+    @apply bg-primary text-primary-foreground rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 active:scale-95;
+  }
+  
+  .malayalam-text {
+    font-family: 'Inter', 'Malayalam Sangam MN', system-ui, sans-serif;
+    @apply font-semibold text-lg;
+  }
+  
+  .english-subtext {
+    @apply text-muted-foreground text-sm font-medium;
+  }
+  
+  .auth-container {
+    @apply min-h-screen flex items-center justify-center p-6;
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-glow)) 100%);
+  }
+  
+  .auth-card {
+    @apply bg-card/95 backdrop-blur-sm p-8 rounded-3xl shadow-2xl border border-border/50 w-full max-w-md;
   }
 }
