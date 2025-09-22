@@ -9,6 +9,9 @@ import { useFarmDiary } from '@/hooks/useFarmDiary';
 import { ArrowLeft, Calendar, Plus, Book, Volume2, Bell, X, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+// Import background image
+import farmBackgroundImage from '@/assets/farm-background.jpg';
+
 export const FarmDiaryPage = () => {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
@@ -79,9 +82,14 @@ export const FarmDiaryPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100">
+    <div 
+      className="min-h-screen bg-cover bg-center bg-fixed relative"
+      style={{
+        backgroundImage: `linear-gradient(rgba(255, 248, 240, 0.9), rgba(255, 248, 240, 0.85)), url(${farmBackgroundImage})`,
+      }}
+    >
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b">
+      <header className="bg-card/95 backdrop-blur-sm border-b shadow-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Button
             variant="ghost"
@@ -93,10 +101,10 @@ export const FarmDiaryPage = () => {
           </Button>
           
           <div className="text-center">
-            <h1 className="malayalam-text text-xl text-primary">
+            <h1 className="malayalam-text text-xl text-primary font-bold">
               {t('farmDiary')}
             </h1>
-            <p className="english-subtext">
+            <p className="text-muted-foreground font-medium">
               {t('farmDiaryDesc')}
             </p>
           </div>
@@ -113,51 +121,75 @@ export const FarmDiaryPage = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        {/* Due Reminders */}
-        {dueReminders.length > 0 && (
-          <div className="mb-6">
-            <h2 className="malayalam-text text-xl flex items-center gap-2 mb-4 text-red-600">
-              <Bell className="h-6 w-6" />
-              {language === 'malayalam' ? 'കാലാവധി കഴിഞ്ഞ റിമൈൻഡറുകൾ' : 'Due Reminders'}
-            </h2>
-            <div className="space-y-2">
-              {dueReminders.map((reminder) => (
-                <Card key={reminder.id} className="farmer-card bg-red-50 border-red-200">
-                  <div className="flex items-center justify-between">
-                    <p className="malayalam-text text-sm flex-1">{reminder.message}</p>
-                    <Button
-                      size="sm"
-                      onClick={() => markReminderCompleted(reminder.id)}
-                      className="bg-red-600 hover:bg-red-700"
-                    >
-                      <Check className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </Card>
-              ))}
+        {/* Reminders Section */}
+        <Card className="farmer-card mb-6 border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-orange-100 rounded-lg">
+              <Bell className="h-6 w-6 text-orange-600" />
             </div>
+            <h2 className="malayalam-text text-xl font-semibold text-orange-800">
+              {language === 'malayalam' ? 'റിമൈൻഡറുകൾ' : 'Reminders'}
+            </h2>
           </div>
-        )}
 
-        {/* Upcoming Reminders */}
-        {upcomingReminders.length > 0 && (
-          <div className="mb-6">
-            <h2 className="malayalam-text text-xl flex items-center gap-2 mb-4 text-blue-600">
-              <Bell className="h-6 w-6" />
-              {language === 'malayalam' ? 'വരാനിരിക്കുന്ന റിമൈൻഡറുകൾ' : 'Upcoming Reminders'}
-            </h2>
-            <div className="space-y-2">
-              {upcomingReminders.map((reminder) => (
-                <Card key={reminder.id} className="farmer-card bg-blue-50 border-blue-200">
-                  <p className="malayalam-text text-sm">{reminder.message}</p>
-                  <p className="english-subtext text-xs mt-1">
-                    {new Date(reminder.scheduledFor).toLocaleString()}
-                  </p>
-                </Card>
-              ))}
+          {/* Due Reminders */}
+          {dueReminders.length > 0 && (
+            <div className="mb-4">
+              <h3 className="malayalam-text text-lg flex items-center gap-2 mb-3 text-red-600">
+                {language === 'malayalam' ? 'കാലാവധി കഴിഞ്ഞത്' : 'Overdue'}
+              </h3>
+              <div className="space-y-2">
+                {dueReminders.map((reminder) => (
+                  <div key={reminder.id} className="bg-red-100 border border-red-200 rounded-lg p-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1">
+                        <p className="malayalam-text text-sm font-medium text-red-800">{reminder.message}</p>
+                        <p className="text-xs text-red-600 mt-1">
+                          {language === 'malayalam' ? 'സമയം:' : 'Scheduled:'} {new Date(reminder.scheduledFor).toLocaleString()}
+                        </p>
+                      </div>
+                      <Button
+                        size="sm"
+                        onClick={() => markReminderCompleted(reminder.id)}
+                        className="bg-red-600 hover:bg-red-700 text-white"
+                      >
+                        <Check className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+
+          {/* Upcoming Reminders */}
+          {upcomingReminders.length > 0 && (
+            <div className="mb-4">
+              <h3 className="malayalam-text text-lg flex items-center gap-2 mb-3 text-blue-600">
+                {language === 'malayalam' ? 'വരാനിരിക്കുന്നവ' : 'Upcoming'}
+              </h3>
+              <div className="space-y-2">
+                {upcomingReminders.map((reminder) => (
+                  <div key={reminder.id} className="bg-blue-100 border border-blue-200 rounded-lg p-3">
+                    <p className="malayalam-text text-sm font-medium text-blue-800">{reminder.message}</p>
+                    <p className="text-xs text-blue-600 mt-1">
+                      {language === 'malayalam' ? 'സമയം:' : 'Scheduled:'} {new Date(reminder.scheduledFor).toLocaleString()}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {dueReminders.length === 0 && upcomingReminders.length === 0 && (
+            <div className="text-center py-4">
+              <p className="text-muted-foreground">
+                {language === 'malayalam' ? 'റിമൈൻഡറുകൾ ഇല്ല' : 'No reminders at the moment'}
+              </p>
+            </div>
+          )}
+        </Card>
+
 
         {/* Add New Entry Button */}
         <Card className="farmer-card mb-6 bg-gradient-to-r from-orange-500 to-amber-500 text-white">

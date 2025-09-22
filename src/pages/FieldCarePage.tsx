@@ -46,9 +46,9 @@ export const FieldCarePage = () => {
   const { language } = useLanguage();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50/30 via-emerald-50/20 to-yellow-50/30">
+    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/5 to-primary/5">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b">
+      <header className="bg-card/95 backdrop-blur-sm border-b shadow-sm">
         <div className="container mx-auto px-4 py-4 flex items-center gap-4">
           <Button
             variant="ghost"
@@ -63,7 +63,7 @@ export const FieldCarePage = () => {
             <h1 className="malayalam-text text-2xl text-primary font-bold">
               {language === 'malayalam' ? 'പാട പരിചരണം' : 'Field Care'}
             </h1>
-            <p className="english-subtext">
+            <p className="text-muted-foreground font-medium">
               {language === 'malayalam' 
                 ? 'കാലാവസ്ഥ, വളം, ആധുനിക കൃഷി രീതികൾ'
                 : 'Weather, fertilizers, and modern farming techniques'

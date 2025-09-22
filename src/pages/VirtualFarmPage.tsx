@@ -6,6 +6,12 @@ import { useTextToSpeech } from '@/hooks/useTextToSpeech';
 import { ArrowLeft, Sprout, TreePine, Flower, Volume2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+// Import farm stage images
+import farmSeedingImage from '@/assets/farm-seeding.jpg';
+import farmGrowingImage from '@/assets/farm-growing.jpg';
+import farmFloweringImage from '@/assets/farm-flowering.jpg';
+import farmHarvestImage from '@/assets/farm-harvest.jpg';
+
 export const VirtualFarmPage = () => {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
@@ -20,7 +26,8 @@ export const VirtualFarmPage = () => {
       status: language === 'malayalam' ? 'പൂർത്തിയായി' : 'Completed',
       description: language === 'malayalam' 
         ? 'നെല്ല് വിത്ത് 2 ഏക്കറിൽ വിതച്ചു'
-        : 'Rice seeds planted in 2 acres'
+        : 'Rice seeds planted in 2 acres',
+      image: farmSeedingImage
     },
     {
       stage: language === 'malayalam' ? 'മുളപ്പിക്കൽ' : 'Germination',
@@ -30,7 +37,8 @@ export const VirtualFarmPage = () => {
       status: language === 'malayalam' ? 'പുരോഗമിക്കുന്നു' : 'In Progress',
       description: language === 'malayalam'
         ? '75% വിത്തുകൾ മുളച്ചു തുടങ്ങി'
-        : '75% seeds have started germinating'
+        : '75% seeds have started germinating',
+      image: farmGrowingImage
     },
     {
       stage: language === 'malayalam' ? 'വളർച്ച' : 'Growth',
@@ -40,7 +48,8 @@ export const VirtualFarmPage = () => {
       status: language === 'malayalam' ? 'കാത്തിരിക്കുന്നു' : 'Pending',
       description: language === 'malayalam'
         ? 'ചെടികൾ വളരാൻ തുടങ്ങും'
-        : 'Plants will start growing'
+        : 'Plants will start growing',
+      image: farmGrowingImage
     },
     {
       stage: language === 'malayalam' ? 'പൂവിടൽ' : 'Flowering',
@@ -50,7 +59,8 @@ export const VirtualFarmPage = () => {
       status: language === 'malayalam' ? 'കാത്തിരിക്കുന്നു' : 'Pending',
       description: language === 'malayalam'
         ? 'നെൽപ്പൂക്കൾ വിരിയും'
-        : 'Rice flowers will bloom'
+        : 'Rice flowers will bloom',
+      image: farmFloweringImage
     },
     {
       stage: language === 'malayalam' ? 'വിളവെടുപ്പ്' : 'Harvest',
@@ -60,7 +70,8 @@ export const VirtualFarmPage = () => {
       status: language === 'malayalam' ? 'കാത്തിരിക്കുന്നു' : 'Pending',
       description: language === 'malayalam'
         ? 'നെല്ല് വിളവെടുക്കാൻ തയ്യാറാകും'
-        : 'Rice will be ready for harvest'
+        : 'Rice will be ready for harvest',
+      image: farmHarvestImage
     }
   ];
 
@@ -153,45 +164,77 @@ export const VirtualFarmPage = () => {
           </div>
         </Card>
 
+        {/* Current Farm Image */}
+        <Card className="farmer-card mb-6 overflow-hidden">
+          <div className="relative h-64 md:h-80">
+            <img 
+              src={farmStages[1].image} // Show germination stage as current
+              alt="Current farm stage"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+            <div className="absolute bottom-4 left-4 text-white">
+              <h3 className="malayalam-text text-2xl font-bold mb-2">
+                {farmStages[1].stage}
+              </h3>
+              <p className="text-white/90">
+                {farmStages[1].description}
+              </p>
+            </div>
+          </div>
+        </Card>
+
         {/* Growth Timeline */}
         <Card className="farmer-card">
           <h2 className="malayalam-text text-xl mb-6">
             {language === 'malayalam' ? 'വളർച്ചയുടെ ഘട്ടങ്ങൾ' : 'Growth Stages'}
           </h2>
           
-          <div className="space-y-4">
+          <div className="space-y-6">
             {farmStages.map((stage, index) => {
               const Icon = stage.icon;
               return (
                 <div key={index} className="relative">
                   {/* Timeline Line */}
                   {index < farmStages.length - 1 && (
-                    <div className="absolute left-8 top-16 w-0.5 h-12 bg-gradient-to-b from-green-300 to-green-100"></div>
+                    <div className="absolute left-16 top-20 w-0.5 h-16 bg-gradient-to-b from-green-300 to-green-100"></div>
                   )}
                   
                   <div className="flex items-start gap-4">
-                    <div className={`p-3 rounded-full ${
-                      stage.progress === 100 
-                        ? 'bg-green-500' 
-                        : stage.progress > 0 
-                          ? 'bg-yellow-500' 
-                          : 'bg-gray-300'
-                    }`}>
-                      <Icon className="h-6 w-6 text-white" />
+                    {/* Stage Image */}
+                    <div className="relative">
+                      <div className="w-24 h-24 rounded-xl overflow-hidden border-2 border-white shadow-lg">
+                        <img 
+                          src={stage.image}
+                          alt={stage.stage}
+                          className={`w-full h-full object-cover transition-all duration-300 ${
+                            stage.progress === 0 ? 'grayscale opacity-50' : ''
+                          }`}
+                        />
+                      </div>
+                      <div className={`absolute -bottom-2 -right-2 p-2 rounded-full ${
+                        stage.progress === 100 
+                          ? 'bg-green-500' 
+                          : stage.progress > 0 
+                            ? 'bg-yellow-500' 
+                            : 'bg-gray-300'
+                      }`}>
+                        <Icon className="h-4 w-4 text-white" />
+                      </div>
                     </div>
                     
                     <div className="flex-1">
                       <div className="flex justify-between items-start mb-2">
-                        <h3 className="malayalam-text text-lg">{stage.stage}</h3>
-                        <span className="english-subtext text-sm">{stage.date}</span>
+                        <h3 className="malayalam-text text-lg font-semibold">{stage.stage}</h3>
+                        <span className="text-muted-foreground text-sm">{stage.date}</span>
                       </div>
                       
-                      <p className="malayalam-text text-muted-foreground mb-3">{stage.description}</p>
+                      <p className="text-muted-foreground mb-3">{stage.description}</p>
                       
                       {/* Progress Bar */}
-                      <div className="w-full bg-gray-200 rounded-full h-3 mb-2">
+                      <div className="w-full bg-muted rounded-full h-2 mb-2">
                         <div 
-                          className={`h-3 rounded-full transition-all duration-300 ${
+                          className={`h-2 rounded-full transition-all duration-300 ${
                             stage.progress === 100 
                               ? 'bg-green-500' 
                               : stage.progress > 0 
@@ -203,16 +246,16 @@ export const VirtualFarmPage = () => {
                       </div>
                       
                       <div className="flex justify-between items-center">
-                        <span className={`malayalam-text text-sm font-medium ${
+                        <span className={`text-sm font-medium ${
                           stage.progress === 100 
                             ? 'text-green-600' 
                             : stage.progress > 0 
                               ? 'text-yellow-600' 
-                              : 'text-gray-500'
+                              : 'text-muted-foreground'
                         }`}>
                           {stage.status}
                         </span>
-                        <span className="english-subtext text-sm">{stage.progress}%</span>
+                        <span className="text-muted-foreground text-sm">{stage.progress}%</span>
                       </div>
                     </div>
                   </div>
