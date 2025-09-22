@@ -97,7 +97,7 @@ export const ServicesGrid = () => {
                     <h3 className="malayalam-text text-2xl font-bold">
                       {language === 'malayalam' ? category.malayalamName : category.englishName}
                     </h3>
-                    <p className="english-subtext text-lg leading-relaxed opacity-90">
+                    <p className="english-subtext text-lg leading-relaxed text-white font-medium drop-shadow-sm">
                       {language === 'malayalam' ? category.malayalamDesc : category.englishDesc}
                     </p>
                   </div>

@@ -17,11 +17,11 @@ export const FarmerHelpline = () => {
 
   return (
     <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-4">
         <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
-          <div className="p-6">
-            <div className="text-center mb-6">
-              <h3 className="malayalam-text text-xl font-bold mb-2">
+          <div className="p-4">
+            <div className="text-center mb-4">
+              <h3 className="malayalam-text text-lg font-bold mb-1">
                 {language === 'malayalam' ? 'കർഷക സഹായ വിഭാഗം' : 'Farmer Helpline'}
               </h3>
               <p className="english-subtext opacity-90">
@@ -32,21 +32,21 @@ export const FarmerHelpline = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
               <div className="text-center">
-                <Clock className="h-8 w-8 mx-auto mb-2 opacity-80" />
+                <Clock className="h-6 w-6 mx-auto mb-1 opacity-80" />
                 <p className="english-subtext text-sm opacity-90">
                   {language === 'malayalam' ? '24 മണിക്കൂർ' : '24 Hours'}
                 </p>
               </div>
               <div className="text-center">
-                <Phone className="h-8 w-8 mx-auto mb-2 opacity-80" />
+                <Phone className="h-6 w-6 mx-auto mb-1 opacity-80" />
                 <p className="english-subtext text-sm opacity-90">
                   {language === 'malayalam' ? 'സൗജന്യ കോൾ' : 'Free Calling'}
                 </p>
               </div>
               <div className="text-center">
-                <MessageCircle className="h-8 w-8 mx-auto mb-2 opacity-80" />
+                <MessageCircle className="h-6 w-6 mx-auto mb-1 opacity-80" />
                 <p className="english-subtext text-sm opacity-90">
                   {language === 'malayalam' ? 'വാട്സ് ആപ്പ്' : 'WhatsApp'}
                 </p>
