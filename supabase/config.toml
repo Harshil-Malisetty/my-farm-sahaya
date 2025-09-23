@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.crop-recommender]
 verify_jwt = false
+
+[functions.farmer-ai-assistant]
+verify_jwt = false
