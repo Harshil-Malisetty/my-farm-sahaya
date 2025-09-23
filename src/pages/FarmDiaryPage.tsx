@@ -5,8 +5,9 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTextToSpeech } from '@/hooks/useTextToSpeech';
-import { useFarmDiary } from '@/hooks/useFarmDiary';
-import { ArrowLeft, Calendar, Plus, Book, Volume2, Bell, X, Check } from 'lucide-react';
+import { useFarmDiarySupabase } from '@/hooks/useFarmDiarySupabase';
+import { useVoiceLogging } from '@/hooks/useVoiceLogging';
+import { ArrowLeft, Calendar, Plus, Book, Volume2, Bell, X, Check, Mic, MicOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 // Import background image
@@ -16,7 +17,24 @@ export const FarmDiaryPage = () => {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
   const { speak, isPlaying } = useTextToSpeech();
-  const { entries, addEntry, getDueReminders, markReminderCompleted, getUpcomingReminders } = useFarmDiary();
+  const { 
+    entries, 
+    addEntry, 
+    getDueReminders, 
+    markReminderCompleted, 
+    getUpcomingReminders,
+    loading: diaryLoading,
+    error: diaryError 
+  } = useFarmDiarySupabase();
+  
+  const {
+    isRecording,
+    isProcessing,
+    error: voiceError,
+    startVoiceLogging,
+    stopVoiceLogging,
+    clearError
+  } = useVoiceLogging();
   
   const [showAddForm, setShowAddForm] = useState(false);
   const [newEntry, setNewEntry] = useState({
@@ -30,17 +48,55 @@ export const FarmDiaryPage = () => {
   const dueReminders = getDueReminders();
   const upcomingReminders = getUpcomingReminders();
 
-  const handleAddEntry = () => {
+  const handleAddEntry = async () => {
     if (newEntry.activity.trim() && newEntry.crop.trim()) {
-      addEntry(newEntry);
-      setNewEntry({
-        date: new Date().toISOString().split('T')[0],
-        activity: '',
-        crop: '',
-        area: '',
-        notes: ''
-      });
-      setShowAddForm(false);
+      try {
+        await addEntry(newEntry);
+        setNewEntry({
+          date: new Date().toISOString().split('T')[0],
+          activity: '',
+          crop: '',
+          area: '',
+          notes: ''
+        });
+        setShowAddForm(false);
+      } catch (error) {
+        console.error('Failed to add entry:', error);
+      }
+    }
+  };
+
+  const handleVoiceEntry = async () => {
+    try {
+      clearError();
+      if (isRecording) {
+        const voiceText = await stopVoiceLogging();
+        
+        // Create a voice entry with current date and voice text as notes
+        const voiceEntry = {
+          date: new Date().toISOString().split('T')[0],
+          activity: 'Voice Entry',
+          crop: 'Various',
+          area: '',
+          notes: `[Voice Log ${new Date().toLocaleTimeString()}] ${voiceText}`
+        };
+        
+        await addEntry(voiceEntry);
+        
+        // Speak confirmation
+        const confirmText = language === 'malayalam' 
+          ? 'വോയ്സ് എൻട്രി സേവ് ചെയ്തു'
+          : 'Voice entry saved';
+        speak(confirmText);
+      } else {
+        await startVoiceLogging();
+      }
+    } catch (error) {
+      console.error('Voice logging error:', error);
+      const errorText = language === 'malayalam' 
+        ? 'വോയ്സ് റെക്കോർഡിംഗിൽ പ്രശ്നം'
+        : 'Voice recording failed';
+      speak(errorText);
     }
   };
 
@@ -109,18 +165,105 @@ export const FarmDiaryPage = () => {
             </p>
           </div>
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleReadPage}
-            disabled={isPlaying}
-          >
-            <Volume2 className={`h-4 w-4 ${isPlaying ? 'animate-pulse' : ''}`} />
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleVoiceEntry}
+              disabled={isProcessing || isPlaying}
+              className={isRecording ? 'bg-red-100 border-red-300' : ''}
+            >
+              {isRecording ? (
+                <MicOff className="h-4 w-4 text-red-600" />
+              ) : (
+                <Mic className={`h-4 w-4 ${isProcessing ? 'animate-pulse' : ''}`} />
+              )}
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleReadPage}
+              disabled={isPlaying}
+            >
+              <Volume2 className={`h-4 w-4 ${isPlaying ? 'animate-pulse' : ''}`} />
+            </Button>
+          </div>
         </div>
       </header>
 
       <main className="container mx-auto px-4 py-8">
+        {/* Voice Status */}
+        {(isRecording || isProcessing || voiceError) && (
+          <Card className={`farmer-card mb-6 ${isRecording ? 'border-red-300 bg-red-50' : isProcessing ? 'border-yellow-300 bg-yellow-50' : 'border-red-300 bg-red-50'}`}>
+            <div className="flex items-center gap-3">
+              {isRecording && (
+                <>
+                  <div className="p-2 bg-red-100 rounded-lg">
+                    <Mic className="h-5 w-5 text-red-600 animate-pulse" />
+                  </div>
+                  <div>
+                    <p className="malayalam-text font-medium text-red-800">
+                      {language === 'malayalam' ? 'റെക്കോർഡിംഗ്...' : 'Recording...'}
+                    </p>
+                    <p className="text-sm text-red-600">
+                      {language === 'malayalam' ? 'സംസാരിച്ച് കഴിഞ്ഞാൽ മൈക് ബട്ടൺ അമർത്തുക' : 'Press mic button when done speaking'}
+                    </p>
+                  </div>
+                </>
+              )}
+              
+              {isProcessing && (
+                <>
+                  <div className="p-2 bg-yellow-100 rounded-lg">
+                    <Volume2 className="h-5 w-5 text-yellow-600 animate-pulse" />
+                  </div>
+                  <p className="malayalam-text font-medium text-yellow-800">
+                    {language === 'malayalam' ? 'പ്രോസസ്സിംഗ്...' : 'Processing voice...'}
+                  </p>
+                </>
+              )}
+              
+              {voiceError && (
+                <>
+                  <div className="p-2 bg-red-100 rounded-lg">
+                    <X className="h-5 w-5 text-red-600" />
+                  </div>
+                  <div>
+                    <p className="malayalam-text font-medium text-red-800">
+                      {language === 'malayalam' ? 'വോയ്സ് എറർ' : 'Voice Error'}
+                    </p>
+                    <p className="text-sm text-red-600">{voiceError}</p>
+                  </div>
+                </>
+              )}
+            </div>
+          </Card>
+        )}
+
+        {/* Loading State */}
+        {diaryLoading && (
+          <Card className="farmer-card mb-6">
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="malayalam-text">
+                {language === 'malayalam' ? 'ഡയറി എൻട്രികൾ ലോഡ് ചെയ്യുന്നു...' : 'Loading diary entries...'}
+              </p>
+            </div>
+          </Card>
+        )}
+
+        {/* Error State */}
+        {diaryError && (
+          <Card className="farmer-card mb-6 border-red-200 bg-red-50">
+            <div className="text-center py-8">
+              <p className="text-red-600 malayalam-text">
+                {language === 'malayalam' ? 'ഡയറി എൻട്രികൾ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല' : 'Failed to load diary entries'}
+              </p>
+              <p className="text-sm text-red-500 mt-2">{diaryError}</p>
+            </div>
+          </Card>
+        )}
         {/* Reminders Section */}
         <Card className="farmer-card mb-6 border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50">
           <div className="flex items-center gap-3 mb-4">

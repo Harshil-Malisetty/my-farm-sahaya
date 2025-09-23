@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      farm_diary_entries: {
+        Row: {
+          activity: string
+          area: string | null
+          created_at: string
+          crop: string | null
+          date: string
+          id: string
+          notes: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          activity: string
+          area?: string | null
+          created_at?: string
+          crop?: string | null
+          date?: string
+          id?: string
+          notes?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          activity?: string
+          area?: string | null
+          created_at?: string
+          crop?: string | null
+          date?: string
+          id?: string
+          notes?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
