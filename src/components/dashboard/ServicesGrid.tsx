@@ -4,7 +4,8 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { 
   Wheat, 
   Bug, 
-  Settings 
+  Settings,
+  MessageCircle
 } from 'lucide-react';
 
 interface ServiceCategory {
@@ -53,6 +54,17 @@ const serviceCategories: ServiceCategory[] = [
     bgGradient: 'from-blue-500 to-teal-600',
     iconColor: 'text-white'
   },
+  {
+    id: 'ai-chat',
+    icon: MessageCircle,
+    route: '/chatbot',
+    malayalamName: 'AI സഹായി',
+    englishName: 'AI Assistant',
+    malayalamDesc: 'സ്മാർട്ട് AI ചാറ്റ്ബോട്ട് സഹായം',
+    englishDesc: 'Smart AI chatbot assistance',
+    bgGradient: 'from-purple-500 to-pink-600',
+    iconColor: 'text-white'
+  },
 ];
 
 export const ServicesGrid = () => {
@@ -77,7 +89,7 @@ export const ServicesGrid = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-8 max-w-7xl mx-auto">
         {serviceCategories.map((category) => {
           const Icon = category.icon;
           

@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.chatbot-brain]
 verify_jwt = false
+
+[functions.xai-grok-chat]
+verify_jwt = false

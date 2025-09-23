@@ -18,6 +18,7 @@ import { ComingSoonPage } from "./pages/ComingSoonPage";
 import { FieldCarePage } from "./pages/FieldCarePage";
 import { CropSupportPage } from "./pages/CropSupportPage";
 import { FarmManagementPage } from "./pages/FarmManagementPage";
+import ChatbotPage from "./pages/ChatbotPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,6 +44,7 @@ const App = () => (
         <Route path="/field-care" element={<FieldCarePage />} />
         <Route path="/crop-support" element={<CropSupportPage />} />
         <Route path="/farm-management" element={<FarmManagementPage />} />
+        <Route path="/chatbot" element={<ChatbotPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
