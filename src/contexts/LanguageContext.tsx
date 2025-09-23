@@ -59,6 +59,11 @@ const translations = {
     voiceHelp: 'ശബ്ദ സഹായം സജീവമാക്കാൻ മൈക്രോഫോൺ ബട്ടൺ അമർത്തുക',
     listening: 'കേൾക്കുന്നു...',
     voiceError: 'ശബ്ദ തിരിച്ചറിയൽ പിശക്',
+    processing: 'പ്രോസസ്സിംഗ്...',
+    chat: 'ചാറ്റ്',
+    navigation: 'നാവിഗേഷൻ',
+    chatHelp: 'AI സഹായിയുമായി സംസാരിക്കാൻ മൈക്രോഫോൺ അമർത്തുക',
+    playing: 'പ്ലേ ചെയ്യുന്നു...',
   },
   english: {
     // App Name
@@ -110,6 +115,11 @@ const translations = {
     voiceHelp: 'Press the microphone button to activate voice help',
     listening: 'Listening...',
     voiceError: 'Voice recognition error',
+    processing: 'Processing...',
+    chat: 'Chat',
+    navigation: 'Navigation',
+    chatHelp: 'Press microphone to talk with AI assistant',
+    playing: 'Playing...',
   },
 };
 
