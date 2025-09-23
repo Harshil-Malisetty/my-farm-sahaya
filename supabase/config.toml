@@ -1,1 +1,7 @@
 project_id = "mvgkutrlfmmuioabfkce"
+
+[functions.text-to-speech]
+verify_jwt = false
+
+[functions.crop-recommender]
+verify_jwt = false

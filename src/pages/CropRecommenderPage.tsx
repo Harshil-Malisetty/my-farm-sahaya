@@ -1,51 +1,137 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTextToSpeech } from '@/hooks/useTextToSpeech';
-import { ArrowLeft, Star, Droplets, Clock, Volume2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { ArrowLeft, Star, Droplets, Clock, Volume2, Loader2, TrendingUp, Leaf, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export const CropRecommenderPage = () => {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
   const { speak, isPlaying } = useTextToSpeech();
+  
+  // State for inputs
+  const [year, setYear] = useState<string>('2024');
+  const [season, setSeason] = useState<string>('');
+  const [area, setArea] = useState<string>('');
+  
+  // State for predictions
+  const [predictions, setPredictions] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>('');
 
-  const seasonalCrops = [
-    {
-      name: language === 'malayalam' ? 'നെല്ല് (ജീരകശാലി)' : 'Rice (Jeerakasali)',
-      season: language === 'malayalam' ? 'മഴക്കാലം' : 'Monsoon',
-      duration: language === 'malayalam' ? '120 ദിവസം' : '120 days',
-      waterNeed: language === 'malayalam' ? 'കൂടിയ വെള്ളം' : 'High water',
-      yield: language === 'malayalam' ? '25-30 ക്വിന്റൽ/ഏക്കർ' : '25-30 quintal/acre',
-      profit: '₹40,000-50,000',
-      benefits: language === 'malayalam' 
-        ? ['പ്രധാന ഭക്ഷ്യവിള', 'നല്ല വിപണി', 'സാമ്പത്തിക സുരക്ഷ']
-        : ['Staple food crop', 'Good market', 'Economic security']
-    },
-    {
-      name: language === 'malayalam' ? 'തക്കാളി' : 'Tomato',
-      season: language === 'malayalam' ? 'വേനൽക്കാലം' : 'Summer',
-      duration: language === 'malayalam' ? '90 ദിവസം' : '90 days',
-      waterNeed: language === 'malayalam' ? 'മദ്ധ്യമം' : 'Medium water',
-      yield: language === 'malayalam' ? '150-200 ക്വിന്റൽ/ഏക്കർ' : '150-200 quintal/acre',
-      profit: '₹80,000-1,20,000',
-      benefits: language === 'malayalam'
-        ? ['വേഗത്തിലുള്ള വളർച്ച', 'കൂടിയ വിലവും വരുമാനവും', 'വർഷം മുഴുവനും വിപണി']
-        : ['Fast growing', 'High price & profit', 'Year-round market']
-    },
-    {
-      name: language === 'malayalam' ? 'മുളക് (പച്ച മുളക്)' : 'Chilli (Green)',
-      season: language === 'malayalam' ? 'വർഷം മുഴുവൻ' : 'Year-round',
-      duration: language === 'malayalam' ? '150 ദിവസം' : '150 days',
-      waterNeed: language === 'malayalam' ? 'മദ്ധ്യമം' : 'Medium water',
-      yield: language === 'malayalam' ? '60-80 ക്വിന്റൽ/ഏക്കർ' : '60-80 quintal/acre',
-      profit: '₹70,000-90,000',
-      benefits: language === 'malayalam'
-        ? ['എല്ലാ സീസണിലും കൃഷി', 'കേരളത്തിൽ നല്ല ഡിമാൻഡ്', 'സ്ഥിരമായ വരുമാനം']
-        : ['All season farming', 'Good demand in Kerala', 'Steady income']
+  // Get crop recommendations
+  const getCropRecommendations = async () => {
+    if (!season || !area) {
+      setError(language === 'malayalam' ? 'എല്ലാ ഫീൽഡുകളും പൂരിപ്പിക്കുക' : 'Please fill all required fields');
+      return;
     }
-  ];
+
+    setLoading(true);
+    setError('');
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('crop-recommender', {
+        body: {
+          year: parseInt(year),
+          season: season,
+          area: parseFloat(area)
+        }
+      });
+
+      if (error) throw error;
+      
+      setPredictions(data);
+      
+      // Speak the results
+      const resultText = language === 'malayalam' 
+        ? `വിള നിർദ്ദേശങ്ങൾ തയ്യാറായി. മികച്ച വിളകൾ: ${data.topCrops.join(', ')}`
+        : `Crop recommendations ready. Top crops: ${data.topCrops.join(', ')}`;
+      speak(resultText);
+      
+    } catch (err) {
+      console.error('Error getting recommendations:', err);
+      setError(language === 'malayalam' ? 'എന്തോ തെറ്റായി. വീണ്ടും ശ്രമിക്കുക' : 'Something went wrong. Please try again');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Create dynamic crop data from predictions
+  const getCropData = () => {
+    if (!predictions) {
+      // Return default static data if no predictions
+      return [
+        {
+          name: language === 'malayalam' ? 'നെല്ല് (ജീരകശാലി)' : 'Rice (Jeerakasali)',
+          season: language === 'malayalam' ? 'മഴക്കാലം' : 'Monsoon',
+          duration: language === 'malayalam' ? '120 ദിവസം' : '120 days',
+          waterNeed: language === 'malayalam' ? 'കൂടിയ വെള്ളം' : 'High water',
+          yield: language === 'malayalam' ? '25-30 ക്വിന്റൽ/ഏക്കർ' : '25-30 quintal/acre',
+          profit: '₹40,000-50,000',
+          successRate: '85%',
+          fertilizer: 'NPK 20-20-20',
+          pesticide: language === 'malayalam' ? 'ജൈവിക കീടനാശിനി' : 'Organic pesticide',
+          benefits: language === 'malayalam' 
+            ? ['പ്രധാന ഭക്ഷ്യവിള', 'നല്ല വിപണി', 'സാമ്പത്തിക സുരക്ഷ']
+            : ['Staple food crop', 'Good market', 'Economic security']
+        },
+        {
+          name: language === 'malayalam' ? 'തക്കാളി' : 'Tomato',
+          season: language === 'malayalam' ? 'വേനൽക്കാലം' : 'Summer',
+          duration: language === 'malayalam' ? '90 ദിവസം' : '90 days',
+          waterNeed: language === 'malayalam' ? 'മദ്ധ്യമം' : 'Medium water',
+          yield: language === 'malayalam' ? '150-200 ക്വിന്റൽ/ഏക്കർ' : '150-200 quintal/acre',
+          profit: '₹80,000-1,20,000',
+          successRate: '78%',
+          fertilizer: 'Compost + NPK',
+          pesticide: language === 'malayalam' ? 'വേപ്പെണ്ണ' : 'Neem oil',
+          benefits: language === 'malayalam'
+            ? ['വേഗത്തിലുള്ള വളർച്ച', 'കൂടിയ വിലവും വരുമാനവും', 'വർഷം മുഴുവനും വിപണി']
+            : ['Fast growing', 'High price & profit', 'Year-round market']
+        },
+        {
+          name: language === 'malayalam' ? 'മുളക് (പച്ച മുളക്)' : 'Chilli (Green)',
+          season: language === 'malayalam' ? 'വർഷം മുഴുവൻ' : 'Year-round',
+          duration: language === 'malayalam' ? '150 ദിവസം' : '150 days',
+          waterNeed: language === 'malayalam' ? 'മദ്ധ്യമം' : 'Medium water',
+          yield: language === 'malayalam' ? '60-80 ക്വിന്റൽ/ഏക്കർ' : '60-80 quintal/acre',
+          profit: '₹70,000-90,000',
+          successRate: '72%',
+          fertilizer: language === 'malayalam' ? 'ജൈവ വളം' : 'Organic fertilizer',
+          pesticide: language === 'malayalam' ? 'ബയോ കീടനാശിനി' : 'Bio-pesticide',
+          benefits: language === 'malayalam'
+            ? ['എല്ലാ സീസണിലും കൃഷി', 'കേരളത്തിൽ നല്ല ഡിമാൻഡ്', 'സ്ഥിരമായ വരുമാനം']
+            : ['All season farming', 'Good demand in Kerala', 'Steady income']
+        }
+      ];
+    }
+
+    // Create dynamic data from ML predictions
+    return predictions.topCrops.map((cropName: string, index: number) => ({
+      name: cropName,
+      season: season,
+      duration: language === 'malayalam' ? `${90 + index * 30} ദിവസം` : `${90 + index * 30} days`,
+      waterNeed: predictions.waterRequirements[index] || (language === 'malayalam' ? 'മദ്ധ്യമം' : 'Medium'),
+      yield: language === 'malayalam' 
+        ? `${predictions.predictedYields[index]} ക്വിന്റൽ/ഏക്കർ` 
+        : `${predictions.predictedYields[index]} quintal/acre`,
+      profit: `₹${(predictions.predictedYields[index] * 2000).toLocaleString()}-${(predictions.predictedYields[index] * 2500).toLocaleString()}`,
+      successRate: `${predictions.successProbability[index]}%`,
+      fertilizer: predictions.fertilizerRequirements[index] || 'NPK',
+      pesticide: predictions.pesticideRequirements[index] || (language === 'malayalam' ? 'ജൈവിക കീടനാശിനി' : 'Organic pesticide'),
+      benefits: language === 'malayalam'
+        ? [`${predictions.successProbability[index]}% വിജയ സാധ്യത`, 'ML പ്രവചനം', 'ഡാറ്റാ അധിഷ്ഠിത നിർദ്ദേശം']
+        : [`${predictions.successProbability[index]}% success rate`, 'ML prediction', 'Data-driven recommendation']
+    }));
+  };
+
+  const seasonalCrops = getCropData();
 
   useEffect(() => {
     const pageText = language === 'malayalam' 
@@ -99,12 +185,88 @@ export const CropRecommenderPage = () => {
 
       <main className="container mx-auto px-4 py-8">
         <div className="space-y-6">
+          {/* Input Form */}
+          <Card className="farmer-card">
+            <div className="p-6">
+              <h3 className="malayalam-text text-xl mb-4">
+                {language === 'malayalam' ? 'വിവരങ്ങൾ നൽകുക' : 'Enter Details'}
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                  <Label htmlFor="year" className="malayalam-text">
+                    {language === 'malayalam' ? 'വർഷം' : 'Year'}
+                  </Label>
+                  <Select value={year} onValueChange={setYear}>
+                    <SelectTrigger>
+                      <SelectValue placeholder={language === 'malayalam' ? 'വർഷം തിരഞ്ഞെടുക്കുക' : 'Select year'} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="2024">2024</SelectItem>
+                      <SelectItem value="2025">2025</SelectItem>
+                      <SelectItem value="2026">2026</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="season" className="malayalam-text">
+                    {language === 'malayalam' ? 'സീസൺ *' : 'Season *'}
+                  </Label>
+                  <Select value={season} onValueChange={setSeason}>
+                    <SelectTrigger>
+                      <SelectValue placeholder={language === 'malayalam' ? 'സീസൺ തിരഞ്ഞെടുക്കുക' : 'Select season'} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Kharif">{language === 'malayalam' ? 'ഖരീഫ് (മഴക്കാലം)' : 'Kharif (Monsoon)'}</SelectItem>
+                      <SelectItem value="Rabi">{language === 'malayalam' ? 'റാബി (വേനൽക്കാലം)' : 'Rabi (Winter)'}</SelectItem>
+                      <SelectItem value="Zaid">{language === 'malayalam' ? 'സയീദ് (വേനൽക്കാലം)' : 'Zaid (Summer)'}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="area" className="malayalam-text">
+                    {language === 'malayalam' ? 'പ്രദേശം (ഹെക്ടർ) *' : 'Area (Hectares) *'}
+                  </Label>
+                  <Input
+                    id="area"
+                    type="number"
+                    placeholder="1.5"
+                    value={area}
+                    onChange={(e) => setArea(e.target.value)}
+                    min="0.1"
+                    step="0.1"
+                  />
+                </div>
+              </div>
+
+              {error && (
+                <div className="text-red-500 text-sm mb-4 malayalam-text">
+                  {error}
+                </div>
+              )}
+
+              <Button 
+                onClick={getCropRecommendations}
+                disabled={loading}
+                className="w-full md:w-auto"
+              >
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {language === 'malayalam' ? 'വിള നിർദ്ദേശം നേടുക' : 'Get Crop Recommendations'}
+              </Button>
+            </div>
+          </Card>
+
           <div className="text-center mb-8">
             <h2 className="malayalam-text text-2xl mb-2">
               {language === 'malayalam' ? 'ഈ സീസണിലെ മികച്ച 3 വിളകൾ' : 'Top 3 Crops This Season'}
             </h2>
             <p className="english-subtext">
-              {language === 'malayalam' ? 'കേരളത്തിലെ കാലാവസ്ഥയ്ക്ക് അനുയോജ്യം' : 'Suitable for Kerala climate'}
+              {predictions 
+                ? (language === 'malayalam' ? 'ML മോഡൽ പ്രവചനങ്ങൾ' : 'ML Model Predictions')
+                : (language === 'malayalam' ? 'കേരളത്തിലെ കാലാവസ്ഥയ്ക്ക് അനുയോജ്യം' : 'Suitable for Kerala climate')
+              }
             </p>
           </div>
 
@@ -145,6 +307,39 @@ export const CropRecommenderPage = () => {
                         {language === 'malayalam' ? 'പ്രതീക്ഷിക്കാവുന്ന ലാഭം' : 'Expected profit'}
                       </p>
                       <p className="text-lg font-bold text-green-600">{crop.profit}</p>
+                    </div>
+                  </div>
+
+                  {/* Second row with ML predictions */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div className="flex items-center gap-2 bg-emerald-50 p-3 rounded-lg">
+                      <TrendingUp className="h-4 w-4 text-emerald-600" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">
+                          {language === 'malayalam' ? 'വിജയ സാധ്യത' : 'Success Rate'}
+                        </p>
+                        <p className="malayalam-text text-sm font-bold text-emerald-600">{crop.successRate}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 bg-orange-50 p-3 rounded-lg">
+                      <Leaf className="h-4 w-4 text-orange-600" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">
+                          {language === 'malayalam' ? 'വളം' : 'Fertilizer'}
+                        </p>
+                        <p className="malayalam-text text-sm">{crop.fertilizer}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 bg-red-50 p-3 rounded-lg">
+                      <Shield className="h-4 w-4 text-red-600" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">
+                          {language === 'malayalam' ? 'കീടനാശിനി' : 'Pesticide'}
+                        </p>
+                        <p className="malayalam-text text-sm">{crop.pesticide}</p>
+                      </div>
                     </div>
                   </div>
                   
