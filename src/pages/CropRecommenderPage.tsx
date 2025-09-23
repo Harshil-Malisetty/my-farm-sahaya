@@ -9,6 +9,7 @@ import { useTextToSpeech } from '@/hooks/useTextToSpeech';
 import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, Star, Droplets, Clock, Volume2, Loader2, TrendingUp, Leaf, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { AIAssistant } from '@/components/AIAssistant';
 
 export const CropRecommenderPage = () => {
   const navigate = useNavigate();
@@ -373,6 +374,17 @@ export const CropRecommenderPage = () => {
           ))}
         </div>
       </main>
+
+      {/* AI Assistant */}
+      <AIAssistant 
+        pageContext={{
+          pageName: 'crop-recommender',
+          pageData: { predictions, season, area, year },
+          contextualPrompt: language === 'malayalam'
+            ? `വിള നിർദ്ദേശം പേജിൽ നിന്ന്: ${predictions ? `ML പ്രവചനങ്ങൾ - മികച്ച വിളകൾ: ${predictions.topCrops?.join(', ')}, സീസൺ: ${season}, വിസ്തീർണ്ണം: ${area} ഹെക്ടർ` : `സീസൺ: ${season || 'തിരഞ്ഞെടുക്കേണ്ടത്'}, വിസ്തീർണ്ണം: ${area || 'തിരഞ്ഞെടുക്കേണ്ടത്'}`}. വിള തിരഞ്ഞെടുപ്പ്, വിത്ത് വിതക്കൽ, വിളവെടുപ്പ് സമയം എന്നിവയെ കുറിച്ച് ഉപദേശം നൽകുക.`
+            : `Crop recommender context: ${predictions ? `ML predictions - Top crops: ${predictions.topCrops?.join(', ')}, Season: ${season}, Area: ${area} hectares` : `Season: ${season || 'not selected'}, Area: ${area || 'not entered'}`}. Provide advice on crop selection, planting times, harvest schedules, and farming practices.`
+        }}
+      />
     </div>
   );
 };

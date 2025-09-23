@@ -6,6 +6,7 @@ import { DashboardHeader } from './DashboardHeader';
 import { VoiceNavigation } from './VoiceNavigation';
 import { ServicesGrid } from './ServicesGrid';
 import { FarmerHelpline } from '../FarmerHelpline';
+import { AIAssistant } from '../AIAssistant';
 import { Loader2 } from 'lucide-react';
 
 export const Dashboard = () => {
@@ -53,6 +54,17 @@ export const Dashboard = () => {
       </main>
       
       <FarmerHelpline />
+      
+      {/* AI Assistant */}
+      <AIAssistant 
+        pageContext={{
+          pageName: 'dashboard',
+          pageData: { userName: user?.user_metadata?.full_name },
+          contextualPrompt: language === 'malayalam'
+            ? `ഡാഷ്ബോർഡ് പേജിൽ നിന്ന്: ഉപയോക്താവ് ${user?.user_metadata?.full_name || 'കർഷകൻ'}. കാലാവസ്ഥ, വിള നിർദ്ദേശം, കൃഷി ദിനപതി, കീട നിയന്ത്രണം, വളം, ആധുനിക കൃഷി, കർഷക കൂട്ടായ്മ, വെർച്വൽ ഫാം തുടങ്ങിയ സേവനങ്ങൾ ലഭ്യം. സാധാരണ കൃഷി ഉപദേശങ്ങൾ നൽകുകയും ആപ്പിന്റെ സേവനങ്ങളെ കുറിച്ച് വിശദീകരിക്കുകയും ചെയ്യുക.`
+            : `Dashboard context: User ${user?.user_metadata?.full_name || 'farmer'}. Available services include weather, crop recommendations, farm diary, pest control, fertilizer advice, modern farming, farmer groups, and virtual farm. Provide general farming advice and explain app features and services.`
+        }}
+      />
     </div>
   );
 };

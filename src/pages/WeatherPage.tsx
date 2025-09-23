@@ -7,6 +7,7 @@ import { useTextToSpeech } from '@/hooks/useTextToSpeech';
 import { useWeather } from '@/hooks/useWeather';
 import { ArrowLeft, Thermometer, Droplets, Wind, Volume2, MapPin, RefreshCw, Eye, Lightbulb } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { AIAssistant } from '@/components/AIAssistant';
 
 export const WeatherPage = () => {
   const navigate = useNavigate();
@@ -252,6 +253,17 @@ export const WeatherPage = () => {
           </>
         )}
       </main>
+
+      {/* AI Assistant */}
+      <AIAssistant 
+        pageContext={{
+          pageName: 'weather',
+          pageData: weatherData,
+          contextualPrompt: language === 'malayalam'
+            ? `കാലാവസ്ഥാ പേജിൽ നിന്ന്: ${weatherData ? `നിലവിലെ താപനില ${weatherData.current?.temperature}°C, ${weatherData.current?.condition}, ആർദ്രത ${weatherData.current?.humidity}%. കൃഷി ഉപദേശം: ${weatherData.farmingAdvice}` : 'കാലാവസ്ഥാ വിവരങ്ങൾ ലോഡിംഗ്'}. കാലാവസ്ഥയുടെ അടിസ്ഥാനത്തിൽ കൃഷി ഉപദേശങ്ങൾ നൽകുക.`
+            : `Weather page context: ${weatherData ? `Current temperature ${weatherData.current?.temperature}°C, ${weatherData.current?.condition}, humidity ${weatherData.current?.humidity}%. Farming advice: ${weatherData.farmingAdvice}` : 'Loading weather data'}. Provide weather-based farming recommendations like when to sow seeds, irrigation advice, etc.`
+        }}
+      />
     </div>
   );
 };

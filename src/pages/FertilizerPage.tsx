@@ -5,6 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useTextToSpeech } from '@/hooks/useTextToSpeech';
 import { ArrowLeft, Leaf, DollarSign, TrendingUp, Volume2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { AIAssistant } from '@/components/AIAssistant';
 
 export const FertilizerPage = () => {
   const navigate = useNavigate();
@@ -129,6 +130,17 @@ export const FertilizerPage = () => {
           </div>
         </Card>
       </main>
+
+      {/* AI Assistant */}
+      <AIAssistant 
+        pageContext={{
+          pageName: 'fertilizer',
+          pageData: fertilizerData,
+          contextualPrompt: language === 'malayalam'
+            ? `വളം പേജിൽ നിന്ന്: ഇന്നത്തെ വിപണി വില - യൂറിയ ${fertilizerData.recommendations[0].price}, പൊട്ടാഷ് ${fertilizerData.recommendations[1].price}, ഫോസ്ഫറസ് ${fertilizerData.recommendations[2].price}. മണ്ണ് പരിപാലന നുറുങ്ങുകൾ ലഭ്യം. വള പ്രയോഗം, മണ്ണിന്റെ ആരോഗ്യം, പോഷകാഹാര പരിപാലനം എന്നിവയെ കുറിച്ച് ഉപദേശം നൽകുക.`
+            : `Fertilizer page context: Today's market prices - Urea ${fertilizerData.recommendations[0].price}, Potash ${fertilizerData.recommendations[1].price}, Phosphorus ${fertilizerData.recommendations[2].price}. Soil care tips available. Provide advice on fertilizer application, soil health, nutrient management, and organic farming practices.`
+        }}
+      />
     </div>
   );
 };

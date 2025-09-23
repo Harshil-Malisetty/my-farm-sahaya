@@ -9,6 +9,7 @@ import { useFarmDiarySupabase } from '@/hooks/useFarmDiarySupabase';
 import { useVoiceLogging } from '@/hooks/useVoiceLogging';
 import { ArrowLeft, Calendar, Plus, Book, Volume2, Bell, X, Check, Mic, MicOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { AIAssistant } from '@/components/AIAssistant';
 
 // Import background image
 import farmBackgroundImage from '@/assets/farm-background.jpg';
@@ -490,6 +491,21 @@ export const FarmDiaryPage = () => {
           )}
         </div>
       </main>
+
+      {/* AI Assistant */}
+      <AIAssistant 
+        pageContext={{
+          pageName: 'farm-diary',
+          pageData: { 
+            entries: entries?.slice(0, 3), 
+            dueReminders: dueReminders?.length, 
+            upcomingReminders: upcomingReminders?.length 
+          },
+          contextualPrompt: language === 'malayalam'
+            ? `കൃഷി ദിനപതി പേജിൽ നിന്ന്: ${entries?.length || 0} എൻട്രികൾ ഉണ്ട്, ${dueReminders?.length || 0} കാലാവധി കഴിഞ്ഞ റിമൈൻഡറുകൾ, ${upcomingReminders?.length || 0} വരാനിരിക്കുന്ന റിമൈൻഡറുകൾ. കൃഷി പ്രവർത്തനങ്ങൾ രേഖപ്പെടുത്താനും ഓർമ്മിപ്പിക്കാനും സഹായിക്കുക. പ്രവർത്തന സമയക്രമം, വിള പരിപാലനം എന്നിവയെ കുറിച്ച് ഉപദേശം നൽകുക.`
+            : `Farm diary context: ${entries?.length || 0} entries recorded, ${dueReminders?.length || 0} overdue reminders, ${upcomingReminders?.length || 0} upcoming reminders. Help with recording farming activities, setting reminders, and provide advice on activity scheduling and crop care.`
+        }}
+      />
     </div>
   );
 };

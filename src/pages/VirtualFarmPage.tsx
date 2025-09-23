@@ -5,6 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useTextToSpeech } from '@/hooks/useTextToSpeech';
 import { ArrowLeft, Sprout, TreePine, Flower, Volume2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { AIAssistant } from '@/components/AIAssistant';
 
 // Import farm stage images
 import farmSeedingImage from '@/assets/farm-seeding.jpg';
@@ -265,6 +266,17 @@ export const VirtualFarmPage = () => {
           </div>
         </Card>
       </main>
+
+      {/* AI Assistant */}
+      <AIAssistant 
+        pageContext={{
+          pageName: 'virtual-farm',
+          pageData: { farmStats, farmStages },
+          contextualPrompt: language === 'malayalam'
+            ? `വെർച്വൽ ഫാം പേജിൽ നിന്ന്: ${farmStats.cropType} ${farmStats.totalArea}ൽ കൃഷി ചെയ്യുന്നു. നിലവിലെ ഘട്ടം: ${farmStats.currentStage}. ${farmStats.plantingDate} വിത്ത് വിതച്ചു. ${farmStats.expectedHarvest} വിളവെടുക്കാം. വെർച്വൽ ഫാമിന്റെ പുരോഗതി വിവരിക്കുകയും അടുത്ത ഘട്ടങ്ങൾക്കുള്ള ഉപദേശങ്ങൾ നൽകുകയും ചെയ്യുക.`
+            : `Virtual farm context: Growing ${farmStats.cropType} in ${farmStats.totalArea}. Current stage: ${farmStats.currentStage}. Planted ${farmStats.plantingDate}, harvest expected ${farmStats.expectedHarvest}. Describe farm progress and provide guidance for next growth stages, care instructions, and farming activities.`
+        }}
+      />
     </div>
   );
 };

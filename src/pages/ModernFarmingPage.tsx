@@ -5,6 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useTextToSpeech } from '@/hooks/useTextToSpeech';
 import { ArrowLeft, Zap, Droplets, Smartphone, Volume2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { AIAssistant } from '@/components/AIAssistant';
 
 export const ModernFarmingPage = () => {
   const navigate = useNavigate();
@@ -133,6 +134,17 @@ export const ModernFarmingPage = () => {
           })}
         </div>
       </main>
+
+      {/* AI Assistant */}
+      <AIAssistant 
+        pageContext={{
+          pageName: 'modern-farming',
+          pageData: techniques,
+          contextualPrompt: language === 'malayalam'
+            ? `ആധുനിക കൃഷി പേജിൽ നിന്ന്: ഡ്രിപ്പ് ഇറിഗേഷൻ (60% വെള്ളം ലാഭിക്കാം), സ്മാർട്ട് സെൻസറുകൾ (മണ്ണിന്റെ ഈർപ്പം നിരീക്ഷണം), സോളാർ പവർ (0 വൈദ്യുതി ബില്ല്) എന്നീ സാങ്കേതികവിദ്യകൾ ലഭ്യം. ആധുനിക കൃഷി സാങ്കേതികവിദ്യകൾ, ചെലവ് കുറയ്ക്കാനുള്ള മാർഗ്ഗങ്ങൾ, സമയം ലാഭിക്കാനുള്ള രീതികൾ എന്നിവയെ കുറിച്ച് ഉപദേശം നൽകുക.`
+            : `Modern farming context: Available technologies - Drip irrigation (saves 60% water), Smart sensors (soil monitoring), Solar power (zero electricity bill). Provide advice on modern farming technologies, cost reduction methods, time-saving techniques, and implementation strategies for small farmers.`
+        }}
+      />
     </div>
   );
 };

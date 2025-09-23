@@ -5,6 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useTextToSpeech } from '@/hooks/useTextToSpeech';
 import { ArrowLeft, Camera, Upload, Volume2, Bug, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { AIAssistant } from '@/components/AIAssistant';
 
 export const PestDiseasePage = () => {
   const navigate = useNavigate();
@@ -190,6 +191,17 @@ export const PestDiseasePage = () => {
           </div>
         </Card>
       </main>
+
+      {/* AI Assistant */}
+      <AIAssistant 
+        pageContext={{
+          pageName: 'pest-disease',
+          pageData: { commonPests, selectedImage, analyzing },
+          contextualPrompt: language === 'malayalam'
+            ? `കീട-രോഗ നിയന്ത്രണം പേജിൽ നിന്ന്: ${selectedImage ? 'ഒരു ചെടിയുടെ ഫോട്ടോ അപ്‌ലോഡ് ചെയ്തു' : 'ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യാൻ കാത്തിരിക്കുന്നു'}. സാധാരണ രോഗങ്ങൾ: ${commonPests.map(p => p.name).join(', ')}. കീട-രോഗ തിരിച്ചറിയൽ, പ്രതിരോധ മാർഗ്ഗങ്ങൾ, ചികിത്സാ രീതികൾ എന്നിവയെ കുറിച്ച് ഉപദേശം നൽകുക.`
+            : `Pest and disease control context: ${selectedImage ? 'Plant photo uploaded for analysis' : 'Waiting for photo upload'}. Common issues: ${commonPests.map(p => p.name).join(', ')}. Provide advice on pest identification, prevention methods, organic treatments, and disease management strategies.`
+        }}
+      />
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useTextToSpeech } from '@/hooks/useTextToSpeech';
 import { ArrowLeft, Users, MessageCircle, Phone, Volume2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { AIAssistant } from '@/components/AIAssistant';
 
 export const FarmerGroupsPage = () => {
   const navigate = useNavigate();
@@ -177,6 +178,17 @@ export const FarmerGroupsPage = () => {
           </div>
         </Card>
       </main>
+
+      {/* AI Assistant */}
+      <AIAssistant 
+        pageContext={{
+          pageName: 'farmer-groups',
+          pageData: farmerGroups,
+          contextualPrompt: language === 'malayalam'
+            ? `കർഷക കൂട്ടായ്മ പേജിൽ നിന്ന്: ${farmerGroups.length} സജീവ ഗ്രൂപ്പുകൾ - കേരള നെൽകർഷക സംഘം (${farmerGroups[0].members}), സ്പൈസ് ഫാർമേഴ്സ് കൂട്ടായ്മ (${farmerGroups[1].members}), പച്ചക്കറി കർഷക സംഘം (${farmerGroups[2].members}). കർഷക കമ്മ്യൂണിറ്റികൾ, ഗ്രൂപ്പ് ഫാർമിംഗ്, സഹകരണ കൃഷി, അറിവ് പങ്കിടൽ എന്നിവയെ കുറിച്ച് ഉപദേശം നൽകുക.`
+            : `Farmer groups context: ${farmerGroups.length} active communities - Kerala Rice Farmers Group (${farmerGroups[0].members}), Spice Farmers Collective (${farmerGroups[1].members}), Vegetable Farmers Union (${farmerGroups[2].members}). Provide advice on farmer communities, group farming, cooperative agriculture, and knowledge sharing strategies.`
+        }}
+      />
     </div>
   );
 };
