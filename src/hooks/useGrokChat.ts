@@ -49,6 +49,17 @@ export const useGrokChat = (): GrokChatHook => {
         timestamp: new Date(),
       };
 
+      // Add a note if using fallback model
+      if (data.model && data.model !== 'grok-beta') {
+        const modelNote = data.model === 'huggingface-fallback' 
+          ? '\n\n*Note: Using fallback AI model. For best results, consider adding xAI credits.*'
+          : data.model === 'error-fallback'
+          ? '\n\n*Note: AI services are experiencing issues. Please try again later.*'
+          : '';
+        
+        botMessage.text += modelNote;
+      }
+
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
       console.error('Error sending message to Grok:', error);
