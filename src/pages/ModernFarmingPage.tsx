@@ -6,6 +6,7 @@ import { useTextToSpeech } from '@/hooks/useTextToSpeech';
 import { ArrowLeft, Zap, Droplets, Smartphone, Volume2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { AIAssistant } from '@/components/AIAssistant';
+import { ModernFarmingForm } from '@/components/ModernFarmingForm';
 
 export const ModernFarmingPage = () => {
   const navigate = useNavigate();
@@ -96,6 +97,9 @@ export const ModernFarmingPage = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
+        {/* Modern Farming Form */}
+        <ModernFarmingForm />
+
         <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
           {techniques.map((technique, index) => {
             const Icon = technique.icon;

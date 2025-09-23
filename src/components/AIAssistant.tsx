@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useConversationalAI } from '@/hooks/useConversationalAI';
-import { useGrokChat } from '@/hooks/useGrokChat';
+import { useAzureChatBot } from '@/hooks/useAzureChatBot';
 import { useAudioRecorder } from '@/hooks/useAudioRecorder';
 import { Bot, Mic, MicOff, Send, X, MessageCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -38,7 +38,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({
     isLoading: isChatLoading, 
     sendMessage, 
     clearMessages 
-  } = useGrokChat();
+  } = useAzureChatBot();
   
   const { 
     isRecording, 
@@ -91,8 +91,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({
 
   const handleTextMessage = async () => {
     if (textInput.trim()) {
-      const contextualMessage = `${getContextualPrompt()}\n\nPage: ${pageContext.pageName}\nUser question: ${textInput}`;
-      await sendMessage(contextualMessage);
+      await sendMessage(textInput, pageContext.pageName);
       setTextInput('');
     }
   };
