@@ -6,14 +6,14 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useGrokChat } from '@/hooks/useGrokChat';
+import { useAzureChatBot } from '@/hooks/useAzureChatBot';
 import { useTextToSpeech } from '@/hooks/useTextToSpeech';
 import { useVoiceLogging } from '@/hooks/useVoiceLogging';
 
 const ChatbotPage = () => {
   const navigate = useNavigate();
   const { language } = useLanguage();
-  const { messages, isLoading, sendMessage, clearMessages } = useGrokChat();
+  const { messages, isLoading, sendMessage, clearMessages } = useAzureChatBot();
   const { speak, isPlaying, stop: stopTTS } = useTextToSpeech();
   const { isRecording, startVoiceLogging, stopVoiceLogging } = useVoiceLogging();
   const [inputMessage, setInputMessage] = useState('');
@@ -22,7 +22,7 @@ const ChatbotPage = () => {
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return;
     
-    await sendMessage(inputMessage);
+    await sendMessage(inputMessage, 'chatbot');
     setInputMessage('');
   };
 
@@ -75,11 +75,11 @@ const ChatbotPage = () => {
                 <h1 className="text-2xl font-bold text-gray-900">
                   {language === 'malayalam' ? 'AI സഹായി' : 'AI Assistant'}
                 </h1>
-                <p className="text-sm text-gray-600">
-                  {language === 'malayalam' 
-                    ? 'കൃഷിയുമായി ബന്ധപ്പെട്ട നിങ്ങളുടെ എല്ലാ ചോദ്യങ്ങൾക്കും ഉത്തരം'
-                    : 'Your farming companion powered by Grok AI'
-                  }
+                  <p className="text-sm text-gray-600">
+                    {language === 'malayalam' 
+                      ? 'കൃഷിയുമായി ബന്ധപ്പെട്ട നിങ്ങളുടെ എല്ലാ ചോദ്യങ്ങൾക്കും ഉത്തരം'
+                      : 'Your farming companion powered by Azure AI'
+                    }
                 </p>
               </div>
             </div>

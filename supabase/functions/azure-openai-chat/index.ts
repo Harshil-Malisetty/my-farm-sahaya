@@ -120,7 +120,7 @@ serve(async (req) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'api-key': Deno.env.get('AZURE_OPENAI_API_KEY')!,
+          'api-key': 'https://suchi-ai-model.cognitiveservices.azure.com/openai/deployments/gpt-4.1/chat/completions?api-version=2025-01-01-preview',
         },
         body: JSON.stringify({
           messages: [

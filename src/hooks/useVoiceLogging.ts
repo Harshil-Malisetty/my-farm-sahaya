@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAudioRecorder } from './useAudioRecorder';
+import { supabase } from '@/integrations/supabase/client';
 
 interface VoiceLoggingResult {
   text: string;
@@ -12,28 +13,23 @@ export const useVoiceLogging = () => {
   const { isRecording, startRecording, stopRecording, audioBlob } = useAudioRecorder();
 
   const convertSpeechToText = async (audioBlob: Blob): Promise<VoiceLoggingResult> => {
-    const formData = new FormData();
-    formData.append('audio', audioBlob, 'audio.webm');
-    formData.append('model', 'whisper-1');
-    formData.append('language', 'auto'); // Auto-detect language
+    // Convert blob to base64 for edge function
+    const arrayBuffer = await audioBlob.arrayBuffer();
+    const base64Audio = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
 
-    const response = await fetch('https://api.elevenlabs.io/v1/speech-to-text', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer sk_d01ca1003988cc3ad1a14cae278bc0043128777e2a161e0f',
-      },
-      body: formData,
+    // Use Supabase edge function for speech-to-text
+    const { data, error } = await supabase.functions.invoke('speech-to-text', {
+      body: { audio: base64Audio },
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || 'Failed to convert speech to text');
+    if (error) {
+      console.error('Speech-to-text error:', error);
+      throw new Error(error.message || 'Failed to convert speech to text');
     }
 
-    const result = await response.json();
     return {
-      text: result.text || '',
-      confidence: result.confidence
+      text: data?.text || '',
+      confidence: data?.confidence || 0.8
     };
   };
 

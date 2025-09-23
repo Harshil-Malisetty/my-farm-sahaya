@@ -187,30 +187,23 @@ export const HomePage = () => {
           </div>
         </Card>
 
-        {/* AI Assistant Card */}
-        <Card className="p-6 mb-8 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200">
-          <div className="text-center">
-            <Bot className="h-12 w-12 text-green-600 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold mb-2 malayalam-text">
-              {language === 'malayalam' ? 'AI കൃഷി സഹായി' : 'AI Farming Assistant'}
-            </h3>
-            <p className="text-muted-foreground mb-4 malayalam-text">
-              {language === 'malayalam' 
-                ? 'ഏത് സമയത്തും കൃഷി സംബന്ധിയായ സംശയങ്ങൾ ചോദിക്കാം'
-                : 'Ask farming questions anytime with our AI assistant'
-              }
-            </p>
-            <Button
-              onClick={() => {
-                // The AI Assistant will open automatically when clicking the floating button
-              }}
-              className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
-            >
-              <Bot className="h-4 w-4 mr-2" />
-              {language === 'malayalam' ? 'AI സഹായി ഉപയോഗിക്കുക' : 'Use AI Assistant'}
-            </Button>
-          </div>
-        </Card>
+        {/* AI Assistant Card - Positioned in center after voice navigation */}
+        <div className="flex justify-center mb-8">
+          <Card className="p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 max-w-md w-full">
+            <div className="text-center">
+              <Bot className="h-12 w-12 text-green-600 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-2 malayalam-text">
+                {language === 'malayalam' ? 'AI കൃഷി സഹായി' : 'AI Farming Assistant'}
+              </h3>
+              <p className="text-muted-foreground mb-4 malayalam-text text-sm">
+                {language === 'malayalam' 
+                  ? 'ഏത് സമയത്തും കൃഷി സംബന്ധിയായ സംശയങ്ങൾ ചോദിക്കാം'
+                  : 'Ask farming questions anytime with our AI assistant'
+                }
+              </p>
+            </div>
+          </Card>
+        </div>
 
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
