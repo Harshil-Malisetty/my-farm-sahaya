@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.farmer-ai-assistant]
 verify_jwt = false
+
+[functions.chatbot-brain]
+verify_jwt = false
